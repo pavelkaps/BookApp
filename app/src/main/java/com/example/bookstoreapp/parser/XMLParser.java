@@ -73,7 +73,7 @@ public class XMLParser extends ConnectionParser {
             AllCollection.sortCollection();
             AllCollection.showLogCategory();
         } catch (Exception e) {
-            Log.i(TAG, "XML Parsing Exception");
+            Log.i(TAG, "XML Parsing Exception "+e.toString());
         }
     }
 

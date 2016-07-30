@@ -10,6 +10,9 @@ import com.example.bookstoreapp.items.MagazineItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.BookItemRealmProxy;
+import io.realm.MagazineItemRealmProxy;
+
 /**
  * Created by Паша on 05.07.2016.
  */
@@ -21,7 +24,9 @@ public class AllCollection {
 
     public static void sortCollection(){
         Category category;
-        for(int i = 0; i < allCategory.size(); i++){
+        List<Category> removeList = new ArrayList<>();
+        int count = allCategory.size();
+        for(int i = 0; i < count; i++){
             category = allCategory.get(i);
             if(category.getParentId() != idParent){
                 if(searchParentIndexOnCategory(category.getParentId()) != -1){
@@ -31,17 +36,23 @@ public class AllCollection {
                         type.setTitle(category.getTitle());
                         type.setParentId(category.getParentId());
                         allCategory.get(searchParentIndexOnCategory(category.getParentId())).getTypeCollection().add(type);
-                        allCategory.remove(i);
-                    }else {
+                        //allCategory.remove(i);
+                        removeList.add(category);
+                    }else if(category.getParentId() == URL_KEY.MAGAZINE_COLLECTION_ID){
                         TypeItems<MagazineItem> type = new TypeItems();
                         type.setId(category.getId());
                         type.setTitle(category.getTitle());
                         type.setParentId(category.getParentId());
                         allCategory.get(searchParentIndexOnCategory(category.getParentId())).getTypeCollection().add(type);
-                        allCategory.remove(i);
+                        //allCategory.remove(i);
+                        removeList.add(category);
                     }
                 }
             }
+        }
+
+        for(Category i: removeList){
+            allCategory.remove(i);
         }
     }
 
@@ -110,13 +121,19 @@ public class AllCollection {
     }
 
     public static void showLogAllTypeItemsEntity(){
+        Log.i(TAG,"start");
         for(int i = 0; i < allCategory.size(); i++){
             for (int j = 0; j < allCategory.get(i).getTypeCollection().size(); j++){
                 for(int y = 0; y < allCategory.get(i).getTypeCollection().get(j).getItemCollection().size(); y++){
-                    if(allCategory.get(i).getTypeCollection().get(j).getItemCollection().get(y).getClass() == BookItem.class){
+                    Log.i(TAG, allCategory.get(i).getTypeCollection().get(j).getItemCollection().get(y).getClass().toString());
+                    if(allCategory.get(i).getTypeCollection().get(j).getItemCollection().get(y).getClass() == BookItem.class
+                            || allCategory.get(i).getTypeCollection().get(j).getItemCollection().get(y).getClass() == BookItemRealmProxy.class){
+                        Log.i(TAG,"it*s book");
                         BookItem book = (BookItem)allCategory.get(i).getTypeCollection().get(j).getItemCollection().get(y);
                         book.showLogEntity();
-                    }else if(allCategory.get(i).getTypeCollection().get(j).getItemCollection().get(y).getClass() == MagazineItem.class){
+                    }else if(allCategory.get(i).getTypeCollection().get(j).getItemCollection().get(y).getClass() == MagazineItem.class
+                            || allCategory.get(i).getTypeCollection().get(j).getItemCollection().get(y).getClass() == MagazineItemRealmProxy.class){
+                        Log.i(TAG,"it*s magazine");
                         MagazineItem magazineItem = (MagazineItem)allCategory.get(i).getTypeCollection().get(j).getItemCollection().get(y);
                         magazineItem.showLogEntity();
                     }

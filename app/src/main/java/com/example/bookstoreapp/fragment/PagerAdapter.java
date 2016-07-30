@@ -13,7 +13,6 @@ import com.example.bookstoreapp.typeFragment.MagazineFragment;
 public class PagerAdapter extends FragmentStatePagerAdapter {
 
     int mNumOfTabs;
-
     public PagerAdapter(FragmentManager fm, int NumOfTabs) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;

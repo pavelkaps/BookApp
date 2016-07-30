@@ -29,16 +29,6 @@ public class BookItem extends RealmObject{
     private String ImageUrl;
 
 
-    /*private DictionaryBook dictionary;
-
-    public DictionaryBook getDictionary() {
-        return dictionary;
-    }
-
-    public void setDictionary(DictionaryBook dictionary) {
-        this.dictionary = dictionary;
-    }*/
-
     public int getId() {
         return Id;
     }

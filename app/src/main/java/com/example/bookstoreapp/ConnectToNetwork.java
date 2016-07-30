@@ -32,14 +32,17 @@ public class ConnectToNetwork {
             URL url = new URL(stringUrl);
             URLConnection urlConnection = url.openConnection();
             urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
+
             InputStream is = urlConnection.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             int numCharsRead;
             char[] charArray = new char[1024];
             StringBuffer sb = new StringBuffer();
+
             while ((numCharsRead = isr.read(charArray)) > 0) {
                 sb.append(charArray, 0, numCharsRead);
             }
+
             String result = sb.toString();
             Log.i(TAG, result);
             return result;
