@@ -22,6 +22,7 @@ import com.example.bookstoreapp.repository.BookRepository;
 import com.example.bookstoreapp.repository.DictionaryBookRepository;
 import com.example.bookstoreapp.repository.DictionaryMagazineRepository;
 import com.example.bookstoreapp.repository.MagazineRepository;
+import com.example.bookstoreapp.saveStoreCollection.Synchroniser;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -132,8 +133,8 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_share) {
-
+        } else if (id == R.id.synchronized_items) {
+            Synchroniser.getInstance().load(getApplicationContext());
         } else if (id == R.id.nav_send) {
 
         }

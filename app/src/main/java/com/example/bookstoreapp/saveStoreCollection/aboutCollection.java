@@ -1,6 +1,5 @@
 package com.example.bookstoreapp.saveStoreCollection;
 
-
 import android.util.Log;
 
 import com.example.bookstoreapp.URL_KEY;
@@ -14,37 +13,39 @@ import io.realm.BookItemRealmProxy;
 import io.realm.MagazineItemRealmProxy;
 
 /**
- * Created by Паша on 05.07.2016.
+ * Created by Паша on 01.08.2016.
  */
-public class AllCollection {
-    private static final String TAG = "AllCollection";
+public class aboutCollection {
+    private static final String TAG = "aboutCollection";
 
-    private static int idParent;
-    public static List<Category> allCategory = new ArrayList<Category>();
+    public int idParent;
+    private static aboutCollection ourInstance = new aboutCollection();
 
-    public static void sortCollection(){
+    public static aboutCollection getInstance() {
+        return ourInstance;
+    }
+
+    public void sortCollection(List<Category> allCategory){
         Category category;
         List<Category> removeList = new ArrayList<>();
         int count = allCategory.size();
         for(int i = 0; i < count; i++){
             category = allCategory.get(i);
             if(category.getParentId() != idParent){
-                if(searchParentIndexOnCategory(category.getParentId()) != -1){
+                if(searchParentIndexOnCategory(category.getParentId(), allCategory) != -1){
                     if(category.getParentId() == URL_KEY.BOOK_COLLECTION_ID){
                         TypeItems<BookItem> type = new TypeItems();
                         type.setId(category.getId());
                         type.setTitle(category.getTitle());
                         type.setParentId(category.getParentId());
-                        allCategory.get(searchParentIndexOnCategory(category.getParentId())).getTypeCollection().add(type);
-                        //allCategory.remove(i);
+                        allCategory.get(searchParentIndexOnCategory(category.getParentId(), allCategory)).getTypeCollection().add(type);
                         removeList.add(category);
                     }else if(category.getParentId() == URL_KEY.MAGAZINE_COLLECTION_ID){
                         TypeItems<MagazineItem> type = new TypeItems();
                         type.setId(category.getId());
                         type.setTitle(category.getTitle());
                         type.setParentId(category.getParentId());
-                        allCategory.get(searchParentIndexOnCategory(category.getParentId())).getTypeCollection().add(type);
-                        //allCategory.remove(i);
+                        allCategory.get(searchParentIndexOnCategory(category.getParentId(), allCategory)).getTypeCollection().add(type);
                         removeList.add(category);
                     }
                 }
@@ -56,27 +57,27 @@ public class AllCollection {
         }
     }
 
-    public static int searchParentIndexOnCategory(int id){
+    public int searchParentIndexOnCategory(int id, List<Category> allCategory){
         for(int i = 0; i < allCategory.size(); i++){
             if(id == allCategory.get(i).getId()){
-               return i;
+                return i;
             }
         }
         return -1;
     }
 
-    public static int searchIdType(int id){
+    public int searchIdType(int id, List<Category> allCategory){
         for(int i = 0; i < allCategory.size(); i++){
             for(int j = 0; j < allCategory.get(i).getTypeCollection().size(); j++){
-                    if(id == allCategory.get(i).getTypeCollection().get(j).getId()){
-                        return j;
-                    }
+                if(id == allCategory.get(i).getTypeCollection().get(j).getId()){
+                    return j;
                 }
             }
+        }
         return -1;
     }
 
-    public static int searchParentIndexOnTypeItems(int id){
+    public int searchParentIndexOnTypeItems(int id, List<Category> allCategory){
         for(int i = 0; i < allCategory.size(); i++){
             for (int j = 0; j < allCategory.get(i).getTypeCollection().size(); j++){
                 if (id == allCategory.get(i).getTypeCollection().get(j).getId()){
@@ -87,26 +88,26 @@ public class AllCollection {
         return -1;
     }
 
-    public static int searchParentIdOnTypeItems(int id){
+    public int searchParentIdOnTypeItems(int id, List<Category> allCategory){
         for(int i = 0; i < allCategory.size(); i++){
             for (int j = 0; j < allCategory.get(i).getTypeCollection().size(); j++){
                 if (id == allCategory.get(i).getTypeCollection().get(j).getId()){
                     return allCategory.get(i).getTypeCollection().get(j).getParentId();
                 }
             }
-            }
+        }
         return -1;
     }
 
-    public static void setIdParent(int id){
+    public void setIdParent(int id){
         idParent = id;
     }
 
-    public static int getIdParent(){
+    public int getIdParent(){
         return idParent;
     }
 
-    public static void showLogCategory(){
+    public void showLogCategory(List<Category> allCategory){
         for(int i = 0; i < allCategory.size(); i++){
             Category category = allCategory.get(i);
             Log.i(TAG, "id: " + category.getId() +
@@ -115,12 +116,12 @@ public class AllCollection {
             List<TypeItems> typeList = category.getTypeCollection();
             for(int y = 0; y < typeList.size(); y++){
                 Log.i(TAG, "..........................type: " + typeList.get(y).getTitle()+
-                " type id: " + typeList.get(y).getId() + " parent id " + typeList.get(y).getParentId());
+                        " type id: " + typeList.get(y).getId() + " parent id " + typeList.get(y).getParentId());
             }
         }
     }
 
-    public static void showLogAllTypeItemsEntity(){
+    public void showLogAllTypeItemsEntity(List<Category> allCategory){
         Log.i(TAG,"start");
         for(int i = 0; i < allCategory.size(); i++){
             for (int j = 0; j < allCategory.get(i).getTypeCollection().size(); j++){
@@ -141,13 +142,4 @@ public class AllCollection {
             }
         }
     }
-
-    public static void showLogBook(BookItem book){
-
-    }
-
-
-
-
 }
-

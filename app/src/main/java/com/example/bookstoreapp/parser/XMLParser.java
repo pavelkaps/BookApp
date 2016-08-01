@@ -7,8 +7,10 @@ import com.example.bookstoreapp.ConnectToNetwork;
 import com.example.bookstoreapp.URL_KEY;
 import com.example.bookstoreapp.items.BookItem;
 import com.example.bookstoreapp.items.MagazineItem;
-import com.example.bookstoreapp.saveStoreCollection.AllCollection;
+import com.example.bookstoreapp.saveStoreCollection.Synchroniser;
 import com.example.bookstoreapp.saveStoreCollection.Category;
+import com.example.bookstoreapp.saveStoreCollection.TypeItems;
+import com.example.bookstoreapp.saveStoreCollection.aboutCollection;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,6 +19,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,11 +27,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 /**
  * Created by Паша on 05.07.2016.
  */
-public class XMLParser extends ConnectionParser {
+public class XMLParser{
     private static final String TAG = "XMLParser";
 
-    @Override
-    public void downloadCollection(String urls) {
+    public void downloadCollection(String urls, List<Category> allCategory) {
         try {
             Document doc = null;
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -43,7 +45,6 @@ public class XMLParser extends ConnectionParser {
             Category category;
             int parentId = 0;
             boolean hasParent = true;
-            //Log.i(TAG,"Start for");
 
             for (int i = 0; i < nodeList.getLength(); i++) {
                 category = new Category();
@@ -60,25 +61,21 @@ public class XMLParser extends ConnectionParser {
                             " parent-id: " + category.getParentId());
 
             }catch (Exception ioe){
-                    AllCollection.setIdParent(parentId);
+                    aboutCollection.getInstance().idParent = parentId;
                     hasParent = false;
             }
                 if(hasParent == true){
-                   // Log.i(TAG,"ADD");
-                    AllCollection.allCategory.add(category);
+                    allCategory.add(category);
                 }
-
                 hasParent = true;
             }
-            AllCollection.sortCollection();
-            AllCollection.showLogCategory();
+
         } catch (Exception e) {
-            Log.i(TAG, "XML Parsing Exception "+e.toString());
+            Log.i(TAG, "XML Parsing Exception " + e.toString());
         }
     }
 
-    @Override
-    public void downloadItems(String _url,int id) {
+    public void downloadItems(String _url, int id, TypeItems type, List<Category> allCollection) {
        try {
            Uri ENDPOINT = Uri
                    .parse(_url)
@@ -99,7 +96,7 @@ public class XMLParser extends ConnectionParser {
 
                Log.i(TAG,"Start for");
 
-               int idParent  = AllCollection.searchParentIdOnTypeItems(id);
+               int idParent  = aboutCollection.getInstance().searchParentIdOnTypeItems(id, allCollection);
 
                boolean isBook = false;
                boolean isMagazine = false;
@@ -199,11 +196,7 @@ public class XMLParser extends ConnectionParser {
                            Log.i(TAG,"9");
                            storeBookItem.setYear(yearItems);
                            Log.i(TAG,"10");
-                           AllCollection.allCategory.get(AllCollection.searchParentIndexOnCategory(idParent))
-                                   .getTypeCollection()
-                                   .get(AllCollection.searchParentIndexOnTypeItems(id))
-                                   .getItemCollection()
-                                   .add(storeBookItem);
+                           type.getItemCollection().add(storeBookItem);
                            Log.i(TAG, "Add book to local");
 
                        }else{
@@ -216,11 +209,7 @@ public class XMLParser extends ConnectionParser {
                            storeMagazineItem.setRating(ratingItems);
                            storeMagazineItem.setImageUrl(imageUrl);
                            storeMagazineItem.setEdition(editionItems);
-                           AllCollection.allCategory.get(AllCollection.searchParentIndexOnCategory(idParent))
-                                   .getTypeCollection()
-                                   .get(AllCollection.searchParentIndexOnTypeItems(id))
-                                   .getItemCollection()
-                                   .add(storeMagazineItem);
+                           type.getItemCollection().add(storeMagazineItem);
                            Log.i(TAG, "Add magazine");
                        }
                    }catch (Exception ioe){

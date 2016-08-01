@@ -12,16 +12,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bookstoreapp.MainActivity;
 import com.example.bookstoreapp.R;
 import com.example.bookstoreapp.URL_KEY;
+import com.example.bookstoreapp.items.DictionaryBook;
+import com.example.bookstoreapp.items.DictionaryMagazine;
 import com.example.bookstoreapp.items.MagazineItem;
 import com.example.bookstoreapp.observer.ItemObserver;
-import com.example.bookstoreapp.observer.UpdateItemObservable;
-import com.example.bookstoreapp.saveStoreCollection.AllCollection;
+import com.example.bookstoreapp.observer.Subject;
+import com.example.bookstoreapp.saveStoreCollection.Synchroniser;
 import com.example.bookstoreapp.saveStoreCollection.TypeItems;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,7 +39,7 @@ public class MagazineFragment extends Fragment implements ItemObserver {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        UpdateItemObservable.getInstance().registerObserver(this);
+        Synchroniser.getInstance().registerObserver(this);
         onCreate = true;
     }
 
@@ -47,22 +49,20 @@ public class MagazineFragment extends Fragment implements ItemObserver {
         View v = inflater.inflate(R.layout.main_list_fragment, container,false);
         mRecyclerViewBook = (RecyclerView) v.findViewById(R.id.recycler_view_vertical_book_elements);
         mRecyclerViewBook.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        setupAdapter();
         return v;
     }
 
 
     public void setupAdapter(){
-        Toast.makeText(getActivity(), "I am notified", Toast.LENGTH_LONG).show();
-        for(int i = 0; i < AllCollection.allCategory.size(); i++) {
-            if(AllCollection.allCategory.get(i).getId() == URL_KEY.MAGAZINE_COLLECTION_ID) {
-                Log.i(TAG, "TypeItems magazine: " + AllCollection.allCategory.get(i).getTypeCollection().size());
-                mRecyclerViewBook.setAdapter(new RecyclerParentAdapter(AllCollection.allCategory.get(i).getTypeCollection()));
-            }
-        }
+        List<DictionaryMagazine> allTypeItems = MainActivity.sDictionaryMagazineRepository.allRead();
+        mRecyclerViewBook.setAdapter(new RecyclerParentAdapter(allTypeItems));
     }
 
     @Override
     public void update() {
+        Toast.makeText(getActivity(), "I am notified", Toast.LENGTH_LONG).show();
         setupAdapter();
     }
 
@@ -77,15 +77,15 @@ public class MagazineFragment extends Fragment implements ItemObserver {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL, false));
         }
 
-        public void bindGalleryItem(TypeItems<MagazineItem> item) {
-            mTextView.setText(item.getTitle());
-            mRecyclerView.setAdapter(new RecyclerAdapter(item.getItemCollection()));
+        public void bindGalleryItem(DictionaryMagazine item) {
+            mTextView.setText(item.Title);
+            mRecyclerView.setAdapter(new RecyclerAdapter(item.listItem));
         }
     }
 
     private class RecyclerParentAdapter extends RecyclerView.Adapter<RecyclerParentHolder>{
-        private List<TypeItems> mItems;
-        public RecyclerParentAdapter(List<TypeItems> items) {
+        private List<DictionaryMagazine> mItems;
+        public RecyclerParentAdapter(List<DictionaryMagazine> items) {
             mItems = items;
         }
 
