@@ -27,6 +27,9 @@ public class BookRepository<T> implements IEntityRepository<T> {
     public BookRepository(Realm realm){
         this.realm = realm;
     }
+    public BookRepository(){
+        realm = Realm.getDefaultInstance();
+    }
 
     @Override
     public void insert(final T entity) {

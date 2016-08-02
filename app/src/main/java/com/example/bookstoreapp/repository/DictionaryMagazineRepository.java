@@ -24,6 +24,9 @@ public class DictionaryMagazineRepository<T> implements IEntityRepository<T> {
     public DictionaryMagazineRepository(Realm realm){
         this.realm = realm;
     }
+    public DictionaryMagazineRepository(){
+        realm = Realm.getDefaultInstance();
+    }
 
     @Override
     public void insert(final T entity) {

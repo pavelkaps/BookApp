@@ -2,6 +2,7 @@ package com.example.bookstoreapp.typeFragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +21,7 @@ import com.example.bookstoreapp.items.DictionaryMagazine;
 import com.example.bookstoreapp.items.MagazineItem;
 import com.example.bookstoreapp.observer.ItemObserver;
 import com.example.bookstoreapp.observer.Subject;
+import com.example.bookstoreapp.repository.DictionaryMagazineRepository;
 import com.example.bookstoreapp.saveStoreCollection.Synchroniser;
 import com.example.bookstoreapp.saveStoreCollection.TypeItems;
 import com.squareup.picasso.Picasso;
@@ -32,17 +34,16 @@ import java.util.List;
 public class MagazineFragment extends Fragment implements ItemObserver {
     public static final String TAG = "MagazineFragment";
     private RecyclerView mRecyclerViewBook;
-    static public boolean onCreate = false;
-
+    private RecyclerParentAdapter mParentAdapter;
+    private DictionaryMagazineRepository mDictionaryMagazineRepository;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         Synchroniser.getInstance().registerObserver(this);
-        onCreate = true;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,14 +51,25 @@ public class MagazineFragment extends Fragment implements ItemObserver {
         mRecyclerViewBook = (RecyclerView) v.findViewById(R.id.recycler_view_vertical_book_elements);
         mRecyclerViewBook.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        setupAdapter();
+        mDictionaryMagazineRepository = new DictionaryMagazineRepository();
+        List<DictionaryMagazine> allTypeItems = mDictionaryMagazineRepository.allRead();
+        mParentAdapter = new RecyclerParentAdapter(allTypeItems);
+        mRecyclerViewBook.setAdapter(mParentAdapter);
+        mSwipeRefreshLayout = (SwipeRefreshLayout)v.findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Synchroniser.getInstance().load(getActivity());
+            }
+        });
         return v;
     }
 
 
     public void setupAdapter(){
-        List<DictionaryMagazine> allTypeItems = MainActivity.sDictionaryMagazineRepository.allRead();
-        mRecyclerViewBook.setAdapter(new RecyclerParentAdapter(allTypeItems));
+        mSwipeRefreshLayout.setRefreshing(false);
+        List<DictionaryMagazine> allTypeItems = mDictionaryMagazineRepository.allRead();
+        mParentAdapter.swap(allTypeItems);
     }
 
     @Override
@@ -104,6 +116,12 @@ public class MagazineFragment extends Fragment implements ItemObserver {
         @Override
         public int getItemCount() {
             return mItems.size();
+        }
+
+        public void swap(List<DictionaryMagazine> items){
+            mItems.clear();
+            mItems.addAll(items);
+            notifyDataSetChanged();
         }
     }
 

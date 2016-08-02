@@ -24,6 +24,9 @@ public class MagazineRepository<T> implements IEntityRepository<T> {
     public MagazineRepository(Realm realm){
         this.realm = realm;
     }
+    public MagazineRepository(){
+        realm = Realm.getDefaultInstance();
+    }
 
     @Override
     public void insert(final T entity) {

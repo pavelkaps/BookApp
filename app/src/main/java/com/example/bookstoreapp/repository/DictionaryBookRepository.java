@@ -24,6 +24,9 @@ public class DictionaryBookRepository<T> implements IEntityRepository<T> {
     public DictionaryBookRepository(Realm realm){
         this.realm = realm;
     }
+    public DictionaryBookRepository(){
+        realm = Realm.getDefaultInstance();
+    }
 
     @Override
     public void insert(final T entity) {
@@ -72,6 +75,7 @@ public class DictionaryBookRepository<T> implements IEntityRepository<T> {
 
     @Override
     public void allDelete() {
+
         realm.executeTransaction(new Realm.Transaction() {
 
             @Override

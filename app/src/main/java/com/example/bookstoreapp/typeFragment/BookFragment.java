@@ -2,6 +2,7 @@ package com.example.bookstoreapp.typeFragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,6 +20,8 @@ import com.example.bookstoreapp.items.BookItem;
 import com.example.bookstoreapp.items.DictionaryBook;
 import com.example.bookstoreapp.observer.ItemObserver;
 import com.example.bookstoreapp.observer.Subject;
+import com.example.bookstoreapp.repository.BookRepository;
+import com.example.bookstoreapp.repository.DictionaryBookRepository;
 import com.example.bookstoreapp.saveStoreCollection.Synchroniser;
 import com.example.bookstoreapp.saveStoreCollection.TypeItems;
 import com.squareup.picasso.Picasso;
@@ -32,19 +35,15 @@ import java.util.List;
 public class BookFragment extends Fragment implements ItemObserver {
     private static final String TAG = "BookFragment";
     private RecyclerView mRecyclerViewBook;
-    private List<BookItem> items = new ArrayList<>();
-
-    static public boolean onCreate = false;
-
-
+    private RecyclerParentAdapter mParentAdapter;
+    private DictionaryBookRepository mBookRepository;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         Synchroniser.getInstance().registerObserver(this);
-        onCreate = true;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,17 +51,28 @@ public class BookFragment extends Fragment implements ItemObserver {
         mRecyclerViewBook = (RecyclerView) v.findViewById(R.id.recycler_view_vertical_book_elements);
         mRecyclerViewBook.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        setupAdapter();
+        mBookRepository = new DictionaryBookRepository();
+        List<DictionaryBook> allTypeItems = mBookRepository.allRead();
+        mParentAdapter = new RecyclerParentAdapter(allTypeItems);
+        mRecyclerViewBook.setAdapter(mParentAdapter);
+        mSwipeRefreshLayout = (SwipeRefreshLayout)v.findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Synchroniser.getInstance().load(getActivity());
+            }
+        });
         return v;
     }
 
     public void setupAdapter(){
-        List<DictionaryBook> allTypeItems = MainActivity.sDictionaryBookRepository.allRead();
-        mRecyclerViewBook.setAdapter(new RecyclerParentAdapter(allTypeItems));
+        List<DictionaryBook> allTypeItems = mBookRepository.allRead();
+        mParentAdapter.swap(allTypeItems);
         }
 
     @Override
     public void update() {
+        mSwipeRefreshLayout.setRefreshing(false);
         Toast.makeText(getActivity(), "I am notified", Toast.LENGTH_LONG).show();
         setupAdapter();
     }
@@ -105,6 +115,12 @@ public class BookFragment extends Fragment implements ItemObserver {
         @Override
         public int getItemCount() {
             return mItems.size();
+        }
+
+        public void swap(List<DictionaryBook> items){
+            mItems.clear();
+            mItems.addAll(items);
+            notifyDataSetChanged();
         }
     }
 

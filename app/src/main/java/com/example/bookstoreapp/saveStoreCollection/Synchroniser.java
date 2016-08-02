@@ -16,6 +16,10 @@ import com.example.bookstoreapp.items.MagazineItem;
 import com.example.bookstoreapp.observer.ItemObserver;
 import com.example.bookstoreapp.observer.Subject;
 import com.example.bookstoreapp.parser.XMLParser;
+import com.example.bookstoreapp.repository.BookRepository;
+import com.example.bookstoreapp.repository.DictionaryBookRepository;
+import com.example.bookstoreapp.repository.DictionaryMagazineRepository;
+import com.example.bookstoreapp.repository.MagazineRepository;
 import com.example.bookstoreapp.typeFragment.BookFragment;
 import com.example.bookstoreapp.typeFragment.MagazineFragment;
 
@@ -31,11 +35,14 @@ import io.realm.MagazineItemRealmProxy;
 public class Synchroniser implements Subject{
     private static final String TAG = "Synchroniser";
 
-    private static int idParent;
     private boolean networkState;
-
-    private List<ItemObserver> mItemObservers;
     private Context mContext;
+    private List<ItemObserver> mItemObservers;
+
+    private BookRepository mBookRepository;
+    private DictionaryBookRepository mDictionaryBookRepository;
+    private MagazineRepository mMagazineRepository;
+    private DictionaryMagazineRepository mDictionaryMagazine;
 
     private static Synchroniser ourInstance = new Synchroniser();
 
@@ -46,6 +53,10 @@ public class Synchroniser implements Subject{
     private Synchroniser() {
         mItemObservers = new ArrayList<>();
 
+        mBookRepository = new BookRepository();
+        mDictionaryBookRepository = new DictionaryBookRepository();
+        mMagazineRepository = new MagazineRepository();
+        mDictionaryMagazine = new DictionaryMagazineRepository();
     }
 
     public void registerObserver(ItemObserver itemObserver){
@@ -110,19 +121,19 @@ public class Synchroniser implements Subject{
                     itemDictionary.Title = allCategory.get(i).getTypeCollection().get(j).getTitle();
                     itemDictionary.Id = allCategory.get(i).getTypeCollection().get(j).getId();
 
-                    if(MainActivity.sDictionaryBookRepository.findById(itemDictionary.Id )== null){
+                    if(mDictionaryBookRepository.findById(itemDictionary.Id )== null){
                         Log.i(TAG, "..................IS NULL");
-                        MainActivity.sDictionaryBookRepository.insert(itemDictionary);
+                        mDictionaryBookRepository.insert(itemDictionary);
                     }else{
                         Log.i(TAG, "..................NOT NULL");
                     }
                     for (int y = 0; y < allCategory.get(i).getTypeCollection().get(j).getItemCollection().size(); y++) {
                         BookItem storeItem = (BookItem) allCategory.get(i).getTypeCollection().get(j).getItemCollection().get(y);
-                        MainActivity.sBookItemBookRepository.insert(storeItem);
+                        mBookRepository.insert(storeItem);
                         try {
-                            DictionaryBook realmItem = MainActivity.sDictionaryBookRepository.findById(itemDictionary.Id);
+                            DictionaryBook realmItem = (DictionaryBook) mDictionaryBookRepository.findById(itemDictionary.Id);
                             realmItem.listItem.add(storeItem);
-                            MainActivity.sDictionaryBookRepository.update(realmItem);
+                            mDictionaryBookRepository.update(realmItem);
                         }catch (Exception ioe){
                             Log.i(TAG, ioe.toString());
                         }
@@ -133,19 +144,19 @@ public class Synchroniser implements Subject{
                     DictionaryMagazine itemDictionary = new DictionaryMagazine();
                     itemDictionary.Title = allCategory.get(i).getTypeCollection().get(j).getTitle();
                     itemDictionary.Id = allCategory.get(i).getTypeCollection().get(j).getId();
-                    if(MainActivity.sDictionaryMagazineRepository.findById(itemDictionary.Id )== null){
+                    if(mDictionaryMagazine.findById(itemDictionary.Id )== null){
                         Log.i(TAG, "..................IS NULL");
-                        MainActivity.sDictionaryMagazineRepository.insert(itemDictionary);
+                        mDictionaryMagazine.insert(itemDictionary);
                     }else{
                         Log.i(TAG, "..................NOT NULL");
                     }
                     for (int y = 0; y < allCategory.get(i).getTypeCollection().get(j).getItemCollection().size(); y++) {
                         MagazineItem storeItem = (MagazineItem) allCategory.get(i).getTypeCollection().get(j).getItemCollection().get(y);
-                        MainActivity.sMagazineRepository.insert(storeItem);
+                        mMagazineRepository.insert(storeItem);
                         try {
-                            DictionaryMagazine realmItem = MainActivity.sDictionaryMagazineRepository.findById(itemDictionary.Id);
+                            DictionaryMagazine realmItem = (DictionaryMagazine) mDictionaryMagazine.findById(itemDictionary.Id);
                             realmItem.listItem.add(storeItem);
-                            MainActivity.sDictionaryMagazineRepository.update(realmItem);
+                            mDictionaryMagazine.update(realmItem);
                         }catch (Exception ioe){
                             Log.i(TAG, ioe.toString());
                         }
@@ -157,17 +168,17 @@ public class Synchroniser implements Subject{
     }
 
     public void deleteAllData(){
-        MainActivity.sBookItemBookRepository.allDelete();
-        MainActivity.sDictionaryBookRepository.allDelete();
-        MainActivity.sDictionaryMagazineRepository.allDelete();
-        MainActivity.sMagazineRepository.allDelete();
+        mBookRepository.allDelete();
+        mDictionaryBookRepository.allDelete();
+        mMagazineRepository.allDelete();
+        mDictionaryMagazine.allDelete();
         Log.i(TAG, "Storage realm is clear =(((");
     }
 
     public void fromRealmInAllCollection(List<Category> allCategory){
         Log.i(TAG, "fromRealmInAllCollection()");
-        List<DictionaryBook> resultsDictionaryBook = MainActivity.sDictionaryBookRepository.allRead();
-        List<DictionaryMagazine> resultsDictionaryMagazine = MainActivity.sDictionaryMagazineRepository.allRead();
+        List<DictionaryBook> resultsDictionaryBook = mDictionaryBookRepository.allRead();
+        List<DictionaryMagazine> resultsDictionaryMagazine = mDictionaryMagazine.allRead();
 
         Category categoryOfBook= new Category();
         categoryOfBook.setId(URL_KEY.BOOK_COLLECTION_ID);
@@ -218,10 +229,10 @@ public class Synchroniser implements Subject{
 
     public void logAllDataInRealm(){
         Log.i(TAG, "logAllDataInRealm()");
-        List<BookItem> resultsBook = MainActivity.sBookItemBookRepository.allRead();
-        List<MagazineItem> resultsMagazine = MainActivity.sMagazineRepository.allRead();
-        List<DictionaryBook> resultsDictionaryBook = MainActivity.sDictionaryBookRepository.allRead();
-        List<DictionaryMagazine> resultsDictionaryMagazine = MainActivity.sDictionaryMagazineRepository.allRead();
+        List<BookItem> resultsBook = mBookRepository.allRead();
+        List<MagazineItem> resultsMagazine = mMagazineRepository.allRead();
+        List<DictionaryBook> resultsDictionaryBook = mDictionaryBookRepository.allRead();
+        List<DictionaryMagazine> resultsDictionaryMagazine = mDictionaryMagazine.allRead();
 
         for (BookItem item : resultsBook) {
             item.showLogEntity();

@@ -35,10 +35,10 @@ public class MainActivity extends AppCompatActivity
     RealmConfiguration realmConfig;
     Realm realm;
 
-    public static BookRepository<BookItem> sBookItemBookRepository;
+   /* public static BookRepository<BookItem> sBookItemBookRepository;
     public static DictionaryBookRepository<DictionaryBook> sDictionaryBookRepository;
     public static DictionaryMagazineRepository<DictionaryMagazine> sDictionaryMagazineRepository;
-    public static MagazineRepository<MagazineItem> sMagazineRepository;
+    public static MagazineRepository<MagazineItem> sMagazineRepository;*/
 
     private boolean isFirstStart = true;
 
@@ -70,12 +70,12 @@ public class MainActivity extends AppCompatActivity
 
         realmConfig = new RealmConfiguration.Builder(this).deleteRealmIfMigrationNeeded().build();
         Realm.setDefaultConfiguration(realmConfig);
-        realm = Realm.getDefaultInstance();
+        /*realm = Realm.getDefaultInstance();
 
         sBookItemBookRepository = new BookRepository<>(realm);
         sDictionaryBookRepository = new DictionaryBookRepository<>(realm);
         sDictionaryMagazineRepository = new DictionaryMagazineRepository<>(realm);
-        sMagazineRepository = new MagazineRepository<>(realm);
+        sMagazineRepository = new MagazineRepository<>(realm);*/
         Log.i(TAG, "Realm");
     }
 
