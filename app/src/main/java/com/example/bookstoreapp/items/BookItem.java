@@ -20,7 +20,7 @@ public class BookItem extends RealmObject{
     public String Author;
     public int Year;
     @PrimaryKey
-    private int Id;
+    private String Id;
     private String Title;
     private String Publisher;
     private String Description;
@@ -29,7 +29,7 @@ public class BookItem extends RealmObject{
     private String ImageUrl;
 
 
-    public int getId() {
+    public String getId() {
         return Id;
     }
 
@@ -57,7 +57,7 @@ public class BookItem extends RealmObject{
         return Title;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         Id = id;
     }
 

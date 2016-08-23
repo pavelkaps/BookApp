@@ -11,6 +11,15 @@ public class URL_KEY {
     public static final String API_NUMBER = "2d34797f3bc8143cbfe2202625f3bc1e";
     public static final String PASSWORD = "463a574fc898e63c4e676452a16f5edc";
 
+
+    public static final String GLOBAL_URL = "http://192.168.43.21:3000/store/";
+
+    public static final String COLLECTIONS_BOOK = GLOBAL_URL + "/booklist";
+    public static final String COLLECTIONS_MAGAZINE = GLOBAL_URL + "/magazinelist";
+    public static final String COLLECTIONS_GENRE = GLOBAL_URL + "/genrelist";
+    public static final String COLLECTIONS_TYPE = GLOBAL_URL + "/typelist";
+
+
     public static final int BOOK_COLLECTION_ID = 5821378;
     public static final int MAGAZINE_COLLECTION_ID = 5821380;
 

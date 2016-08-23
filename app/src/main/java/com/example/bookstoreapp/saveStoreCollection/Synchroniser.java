@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.example.bookstoreapp.ConnectToNetwork;
 import com.example.bookstoreapp.MainActivity;
+import com.example.bookstoreapp.Synchronaisers.BookSynchronizer;
+import com.example.bookstoreapp.Synchronaisers.SynchronizeItems;
 import com.example.bookstoreapp.URL_KEY;
 import com.example.bookstoreapp.items.BookItem;
 import com.example.bookstoreapp.items.DictionaryBook;
@@ -39,11 +41,6 @@ public class Synchroniser implements Subject{
     private Context mContext;
     private List<ItemObserver> mItemObservers;
 
-    private BookRepository mBookRepository;
-    private DictionaryBookRepository mDictionaryBookRepository;
-    private MagazineRepository mMagazineRepository;
-    private DictionaryMagazineRepository mDictionaryMagazine;
-
     private static Synchroniser ourInstance = new Synchroniser();
 
     public static Synchroniser getInstance() {
@@ -52,11 +49,6 @@ public class Synchroniser implements Subject{
 
     private Synchroniser() {
         mItemObservers = new ArrayList<>();
-
-        mBookRepository = new BookRepository();
-        mDictionaryBookRepository = new DictionaryBookRepository();
-        mMagazineRepository = new MagazineRepository();
-        mDictionaryMagazine = new DictionaryMagazineRepository();
     }
 
     public void registerObserver(ItemObserver itemObserver){
@@ -70,17 +62,24 @@ public class Synchroniser implements Subject{
     }
 
     public void load(Context context){
+        List<SynchronizeItems> synchronizeItemsList = new ArrayList<>();
+        BookSynchronizer<BookItem> synchronizer = new BookSynchronizer<>();
+        synchronizeItemsList.add(synchronizer);
+
         mContext = context;
         networkState = ConnectToNetwork.hasConnection(mContext);
         if(networkState == true) {
-            new LoadItemsTask().execute();
+            for (SynchronizeItems item : synchronizeItemsList){
+                item.load();
+            }
         }
     }
 
-    private class LoadItemsTask extends AsyncTask<Void, Void, List<Category>> {
+    /*private class LoadItemsTask extends AsyncTask<Void, Void, List<Category>> {
         @Override
         protected List<Category> doInBackground(Void... params) {
-            List<Category> allCategory; allCategory = new ArrayList<>();
+            List<Category> allCategory;
+            allCategory = new ArrayList<>();
 
             XMLParser parser = new XMLParser();
             parser.downloadCollection(URL_KEY.COLLECTIONS, allCategory);
@@ -101,17 +100,18 @@ public class Synchroniser implements Subject{
         public void onPostExecute(List<Category> result){
             super.onPostExecute(result);
             deleteAllData();
-            addAllToData(result);
+            //addAllToData(result);
 
             Log.i(TAG, "Synchroniser item: "+ result.size());
             notifyObserver();
             aboutCollection.getInstance().showLogAllTypeItemsEntity(result);
         }
     }
+    */
 
 
 
-
+    /*
     public void addAllToData(List<Category> allCategory){
         for(int i = 0; i < allCategory.size(); i++){
             for (int j = 0; j < allCategory.get(i).getTypeCollection().size(); j++){
@@ -166,15 +166,9 @@ public class Synchroniser implements Subject{
             }
         }
     }
+    */
 
-    public void deleteAllData(){
-        mBookRepository.allDelete();
-        mDictionaryBookRepository.allDelete();
-        mMagazineRepository.allDelete();
-        mDictionaryMagazine.allDelete();
-        Log.i(TAG, "Storage realm is clear =(((");
-    }
-
+    /*
     public void fromRealmInAllCollection(List<Category> allCategory){
         Log.i(TAG, "fromRealmInAllCollection()");
         List<DictionaryBook> resultsDictionaryBook = mDictionaryBookRepository.allRead();
@@ -226,8 +220,9 @@ public class Synchroniser implements Subject{
             }
         }
     }
+    */
 
-    public void logAllDataInRealm(){
+/*    public void logAllDataInRealm(){
         Log.i(TAG, "logAllDataInRealm()");
         List<BookItem> resultsBook = mBookRepository.allRead();
         List<MagazineItem> resultsMagazine = mMagazineRepository.allRead();
@@ -252,6 +247,7 @@ public class Synchroniser implements Subject{
         }
 
     }
+    */
 
 }
 

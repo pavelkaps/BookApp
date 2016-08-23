@@ -178,7 +178,7 @@ public class XMLParser{
                        if(isBook == true){
                            storeBookItem = new BookItem();
                            Log.i(TAG,"1");
-                           storeBookItem.setId(idItems);
+                           //storeBookItem.setId(idItems);
                            Log.i(TAG,"2");
                            storeBookItem.setTitle(titleItems);
                            Log.i(TAG,"3");
