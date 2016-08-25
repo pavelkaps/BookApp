@@ -1,4 +1,4 @@
-package com.example.bookstoreapp.parser;
+package com.example.bookstoreapp.jsonParser;
 
 import android.util.Log;
 
@@ -10,25 +10,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Паша on 23.08.2016.
  */
-public class JSONBookParse<T> implements JSONParser<T>{
-    private static final String TAG = "JSONBookParse";
+public class JSONBookParser<T> implements JSONParser<T>{
+    private static final String TAG = "JSONBookParser";
 
-    public List<T> downloadCollection() {
+    public List<T> downloadCollection(String url) {
         List<BookItem> items = new ArrayList<>();
         try {
-            String jsonString = ConnectToNetwork.loadDataFromServer(URL_KEY.COLLECTIONS_BOOK);
+            String jsonString = ConnectToNetwork.loadDataFromServer(url);
             Log.i(TAG, jsonString);
-            JSONObject jsonBody = new JSONObject(jsonString);
-
-            JSONObject jsonObject = jsonBody.getJSONObject("");
-            JSONArray jsonArray = jsonObject.getJSONArray("");
+            JSONArray jsonArray = new JSONArray(jsonString);
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject bookJsonObject = jsonArray.getJSONObject(i);

@@ -23,15 +23,16 @@ public class ConnectToNetwork {
     public static String loadDataFromServer(String stringUrl){
         try {
             Log.i(TAG , "Start");
-            String authString = URL_KEY.API_NUMBER + ":" + URL_KEY.PASSWORD;
+
+            /*String authString = URL_KEY.API_NUMBER + ":" + URL_KEY.PASSWORD;
             Log.i(TAG,"auth string: " + authString);
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
             String authStringEnc = new String(authEncBytes);
-            Log.i(TAG,"Base64 encoded auth string: " + authStringEnc);
+            Log.i(TAG,"Base64 encoded auth string: " + authStringEnc);*/
 
             URL url = new URL(stringUrl);
             URLConnection urlConnection = url.openConnection();
-            urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
+            //urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
 
             InputStream is = urlConnection.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);

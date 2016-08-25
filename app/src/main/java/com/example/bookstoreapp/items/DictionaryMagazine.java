@@ -9,7 +9,7 @@ import io.realm.annotations.PrimaryKey;
  */
 public class DictionaryMagazine extends RealmObject {
     @PrimaryKey
-    public int Id;
+    public String Id;
     public String Title;
     public RealmList<MagazineItem> listItem;
     public DictionaryMagazine(){

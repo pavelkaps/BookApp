@@ -1,4 +1,4 @@
-package com.example.bookstoreapp.parser;
+package com.example.bookstoreapp.xmlParser;
 
 import android.net.Uri;
 import android.util.Log;
@@ -7,7 +7,6 @@ import com.example.bookstoreapp.ConnectToNetwork;
 import com.example.bookstoreapp.URL_KEY;
 import com.example.bookstoreapp.items.BookItem;
 import com.example.bookstoreapp.items.MagazineItem;
-import com.example.bookstoreapp.saveStoreCollection.Synchroniser;
 import com.example.bookstoreapp.saveStoreCollection.Category;
 import com.example.bookstoreapp.saveStoreCollection.TypeItems;
 import com.example.bookstoreapp.saveStoreCollection.aboutCollection;
@@ -201,7 +200,7 @@ public class XMLParser{
 
                        }else{
                            storeMagazineItem = new MagazineItem();
-                           storeMagazineItem.setId(idItems);
+                          // storeMagazineItem.setId(idItems);
                            storeMagazineItem.setTitle(titleItems);
                            storeMagazineItem.setPublisher(publisherItems);
                            storeMagazineItem.setDescription(descriptionItems);

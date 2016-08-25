@@ -20,7 +20,7 @@ public class MagazineItem extends RealmObject{
 
     public int Edition;
     @PrimaryKey
-    private int Id;
+    private String Id;
     private String Title;
     private String Publisher;
     private String Description;
@@ -38,7 +38,7 @@ public class MagazineItem extends RealmObject{
         return dictionary;
     }
 
-    public int getId() {
+    public String getId() {
         return Id;
     }
 
@@ -66,7 +66,7 @@ public class MagazineItem extends RealmObject{
         return Title;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         Id = id;
     }
 

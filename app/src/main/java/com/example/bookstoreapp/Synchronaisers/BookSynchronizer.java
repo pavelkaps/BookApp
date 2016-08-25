@@ -4,16 +4,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.bookstoreapp.URL_KEY;
-import com.example.bookstoreapp.items.BookItem;
-import com.example.bookstoreapp.parser.JSONBookParse;
-import com.example.bookstoreapp.parser.JSONParser;
-import com.example.bookstoreapp.parser.XMLParser;
+import com.example.bookstoreapp.jsonParser.JSONBookParser;
+import com.example.bookstoreapp.jsonParser.JSONParser;
 import com.example.bookstoreapp.repository.BookRepository;
-import com.example.bookstoreapp.saveStoreCollection.Category;
-import com.example.bookstoreapp.saveStoreCollection.TypeItems;
-import com.example.bookstoreapp.saveStoreCollection.aboutCollection;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,8 +38,8 @@ public class BookSynchronizer<T> implements SynchronizeItems<T> {
     private class LoadItemsTask extends AsyncTask<Void, Void, List<T>> {
         @Override
         protected List<T> doInBackground(Void... params) {
-            JSONParser<T> parser = new JSONBookParse<>();
-            return parser.downloadCollection();
+            JSONParser<T> parser = new JSONBookParser<>();
+            return parser.downloadCollection(URL_KEY.COLLECTIONS_BOOK);
         }
 
         @Override

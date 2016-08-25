@@ -1,35 +1,28 @@
 package com.example.bookstoreapp.saveStoreCollection;
 
 
-import android.app.Application;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.bookstoreapp.ConnectToNetwork;
-import com.example.bookstoreapp.MainActivity;
 import com.example.bookstoreapp.Synchronaisers.BookSynchronizer;
+import com.example.bookstoreapp.Synchronaisers.GenreSynchronizer;
+import com.example.bookstoreapp.Synchronaisers.MagazineSynchronizer;
 import com.example.bookstoreapp.Synchronaisers.SynchronizeItems;
-import com.example.bookstoreapp.URL_KEY;
+import com.example.bookstoreapp.Synchronaisers.TypeSynchronizer;
 import com.example.bookstoreapp.items.BookItem;
 import com.example.bookstoreapp.items.DictionaryBook;
 import com.example.bookstoreapp.items.DictionaryMagazine;
 import com.example.bookstoreapp.items.MagazineItem;
 import com.example.bookstoreapp.observer.ItemObserver;
 import com.example.bookstoreapp.observer.Subject;
-import com.example.bookstoreapp.parser.XMLParser;
 import com.example.bookstoreapp.repository.BookRepository;
 import com.example.bookstoreapp.repository.DictionaryBookRepository;
 import com.example.bookstoreapp.repository.DictionaryMagazineRepository;
 import com.example.bookstoreapp.repository.MagazineRepository;
-import com.example.bookstoreapp.typeFragment.BookFragment;
-import com.example.bookstoreapp.typeFragment.MagazineFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.realm.BookItemRealmProxy;
-import io.realm.MagazineItemRealmProxy;
 
 /**
  * Created by Паша on 05.07.2016.
@@ -63,8 +56,16 @@ public class Synchroniser implements Subject{
 
     public void load(Context context){
         List<SynchronizeItems> synchronizeItemsList = new ArrayList<>();
-        BookSynchronizer<BookItem> synchronizer = new BookSynchronizer<>();
-        synchronizeItemsList.add(synchronizer);
+
+        BookSynchronizer<BookItem> synchronizerBook = new BookSynchronizer<>();
+        MagazineSynchronizer<MagazineItem> synchronizerMagazine = new MagazineSynchronizer<>();
+        GenreSynchronizer<DictionaryBook> synchronizerGenre = new GenreSynchronizer<>();
+        TypeSynchronizer<DictionaryMagazine> synchronizerType = new TypeSynchronizer<>();
+
+        synchronizeItemsList.add(synchronizerBook);
+        synchronizeItemsList.add(synchronizerMagazine);
+        synchronizeItemsList.add(synchronizerGenre);
+        synchronizeItemsList.add(synchronizerType);
 
         mContext = context;
         networkState = ConnectToNetwork.hasConnection(mContext);
@@ -222,7 +223,12 @@ public class Synchroniser implements Subject{
     }
     */
 
-/*    public void logAllDataInRealm(){
+    public static void logAllDataInRealm(){
+        BookRepository<BookItem> mBookRepository = new BookRepository<>();
+        MagazineRepository<MagazineItem> mMagazineRepository = new MagazineRepository<>();
+        DictionaryBookRepository<DictionaryBook> mDictionaryBookRepository = new DictionaryBookRepository<>();
+        DictionaryMagazineRepository<DictionaryMagazine> mDictionaryMagazine = new DictionaryMagazineRepository<>();
+
         Log.i(TAG, "logAllDataInRealm()");
         List<BookItem> resultsBook = mBookRepository.allRead();
         List<MagazineItem> resultsMagazine = mMagazineRepository.allRead();
@@ -237,17 +243,17 @@ public class Synchroniser implements Subject{
         }
         for (DictionaryBook item : resultsDictionaryBook) {
             for(BookItem book : item.listItem){
-                Log.i(TAG, item.Title + " has " + book.getTitle());
+                Log.i(TAG, item.Id + " " + item.Title + " has " + book.getTitle());
             }
         }
         for (DictionaryMagazine item : resultsDictionaryMagazine) {
             for(MagazineItem book : item.listItem){
-                Log.i(TAG, item.Title + " has " + book.getTitle());
+                Log.i(TAG, item.Id + " " + item.Title + " has " + book.getTitle());
             }
         }
 
     }
-    */
+
 
 }
 

@@ -70,12 +70,6 @@ public class MainActivity extends AppCompatActivity
 
         realmConfig = new RealmConfiguration.Builder(this).deleteRealmIfMigrationNeeded().build();
         Realm.setDefaultConfiguration(realmConfig);
-        /*realm = Realm.getDefaultInstance();
-
-        sBookItemBookRepository = new BookRepository<>(realm);
-        sDictionaryBookRepository = new DictionaryBookRepository<>(realm);
-        sDictionaryMagazineRepository = new DictionaryMagazineRepository<>(realm);
-        sMagazineRepository = new MagazineRepository<>(realm);*/
         Log.i(TAG, "Realm");
     }
 

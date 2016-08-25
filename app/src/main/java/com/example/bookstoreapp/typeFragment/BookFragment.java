@@ -36,7 +36,7 @@ public class BookFragment extends Fragment implements ItemObserver {
     private static final String TAG = "BookFragment";
     private RecyclerView mRecyclerViewBook;
     private RecyclerParentAdapter mParentAdapter;
-    private DictionaryBookRepository mBookRepository;
+    private DictionaryBookRepository<DictionaryBook> mBookRepository;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,11 +50,11 @@ public class BookFragment extends Fragment implements ItemObserver {
         View v = inflater.inflate(R.layout.main_list_fragment, container,false);
         mRecyclerViewBook = (RecyclerView) v.findViewById(R.id.recycler_view_vertical_book_elements);
         mRecyclerViewBook.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        mBookRepository = new DictionaryBookRepository();
+        mBookRepository = new DictionaryBookRepository<>();
         List<DictionaryBook> allTypeItems = mBookRepository.allRead();
         mParentAdapter = new RecyclerParentAdapter(allTypeItems);
         mRecyclerViewBook.setAdapter(mParentAdapter);
+
         mSwipeRefreshLayout = (SwipeRefreshLayout)v.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -65,6 +65,26 @@ public class BookFragment extends Fragment implements ItemObserver {
         return v;
     }
 
+    public List<DictionaryBook> sampleDictionary(){
+        List<DictionaryBook> allTypeItems = new ArrayList<>();
+        DictionaryBook newDictionary = new DictionaryBook();
+        newDictionary.Id = "540";
+        newDictionary.Title = "Sample";
+
+        BookItem newBook = new BookItem();
+        newBook.setTitle("Sample 1");
+        newBook.setYear(1789);
+
+        BookItem newBook1 = new BookItem();
+        newBook1.setTitle("Sample 2");
+        newBook1.setYear(1900);
+
+        newDictionary.listItem.add(newBook);
+        newDictionary.listItem.add(newBook1);
+
+        allTypeItems.add(newDictionary);
+        return allTypeItems;
+    }
     public void setupAdapter(){
         List<DictionaryBook> allTypeItems = mBookRepository.allRead();
         mParentAdapter.swap(allTypeItems);

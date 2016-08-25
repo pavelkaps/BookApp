@@ -1,6 +1,5 @@
 package com.example.bookstoreapp.fragment;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -10,22 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.bookstoreapp.ConnectToNetwork;
-import com.example.bookstoreapp.MainActivity;
 import com.example.bookstoreapp.R;
-import com.example.bookstoreapp.items.BookItem;
-import com.example.bookstoreapp.items.DictionaryBook;
-import com.example.bookstoreapp.items.DictionaryMagazine;
-import com.example.bookstoreapp.items.MagazineItem;
 import com.example.bookstoreapp.observer.ItemObserver;
-import com.example.bookstoreapp.observer.Subject;
-import com.example.bookstoreapp.parser.XMLParser;
 import com.example.bookstoreapp.saveStoreCollection.Synchroniser;
-import com.example.bookstoreapp.saveStoreCollection.Category;
-import com.example.bookstoreapp.saveStoreCollection.TypeItems;
-import com.example.bookstoreapp.URL_KEY;
-import com.example.bookstoreapp.typeFragment.BookFragment;
-import com.example.bookstoreapp.typeFragment.MagazineFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +31,7 @@ public class BookStoreFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "ONCREATE");
+        Synchroniser.logAllDataInRealm();
 
     }
 

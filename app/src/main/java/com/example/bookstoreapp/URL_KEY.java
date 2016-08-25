@@ -12,7 +12,7 @@ public class URL_KEY {
     public static final String PASSWORD = "463a574fc898e63c4e676452a16f5edc";
 
 
-    public static final String GLOBAL_URL = "http://192.168.43.21:3000/store/";
+    public static final String GLOBAL_URL = "http://192.168.1.7:3000/store";
 
     public static final String COLLECTIONS_BOOK = GLOBAL_URL + "/booklist";
     public static final String COLLECTIONS_MAGAZINE = GLOBAL_URL + "/magazinelist";
