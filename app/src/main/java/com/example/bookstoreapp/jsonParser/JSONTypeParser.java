@@ -2,7 +2,6 @@ package com.example.bookstoreapp.jsonParser;
 
 import android.util.Log;
 
-import com.example.bookstoreapp.ConnectToNetwork;
 import com.example.bookstoreapp.URL_KEY;
 import com.example.bookstoreapp.items.DictionaryMagazine;
 import com.example.bookstoreapp.items.MagazineItem;
@@ -21,7 +20,7 @@ public class JSONTypeParser<T> implements IEntityJSONParser<T> {
     private static final String TAG = "JSONTypeParser";
 
     @Override
-    public List<T> parce(String jsonString) {
+    public List<T> parse(String jsonString) {
         List<DictionaryMagazine> items = new ArrayList<>();
         try {
             JSONArray jsonArray = new JSONArray(jsonString);
@@ -38,7 +37,7 @@ public class JSONTypeParser<T> implements IEntityJSONParser<T> {
                 for(int j=0;i< magazineArray.length();i++) {
                     String magazineId = magazineArray.getString(i);
                     IEntityJSONParser<MagazineItem> magazineParser = new JSONMagazineParser<>();
-                    List<MagazineItem> oneMagazine = magazineParser.parce(URL_KEY.COLLECTIONS_MAGAZINE + "/" + magazineId);
+                    List<MagazineItem> oneMagazine = magazineParser.parse(URL_KEY.COLLECTIONS_MAGAZINE + "/" + magazineId);
                     item.listItem.add(oneMagazine.get(0));
                 }
                 Log.i(TAG, "addItem");

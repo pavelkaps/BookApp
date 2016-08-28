@@ -16,6 +16,6 @@ public class BookLoader<T> implements IEntityLoader<T> {
     public List<T> load() {
         String json = ConnectToNetwork.loadDataFromServer(URL_KEY.COLLECTIONS_BOOK);
         IEntityJSONParser<BookItem> parser = new JSONBookParser<>();
-        return (List<T>)parser.parce(json);
+        return (List<T>)parser.parse(json);
     }
 }

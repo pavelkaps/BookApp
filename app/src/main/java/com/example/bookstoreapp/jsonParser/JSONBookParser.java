@@ -18,7 +18,7 @@ import java.util.List;
 public class JSONBookParser<T> implements IEntityJSONParser<T> {
     private static final String TAG = "JSONBookParser";
 
-    public List<T> parce(String jsonString) {
+    public List<T> parse(String jsonString) {
         List<BookItem> items = new ArrayList<>();
         try {
             JSONArray jsonArray = new JSONArray(jsonString);

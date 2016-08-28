@@ -19,7 +19,7 @@ public class JSONMagazineParser<T> implements IEntityJSONParser<T> {
     private static final String TAG = "JSONMagazineParser";
 
     @Override
-    public List parce(String jsonString) {
+    public List parse(String jsonString) {
         List<MagazineItem> items = new ArrayList<>();
         try {
             JSONArray jsonArray = new JSONArray(jsonString);
