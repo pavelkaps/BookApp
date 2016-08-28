@@ -3,15 +3,10 @@ package com.example.bookstoreapp.Synchronaisers;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.bookstoreapp.URL_KEY;
-import com.example.bookstoreapp.items.BookItem;
-import com.example.bookstoreapp.items.DictionaryBook;
 import com.example.bookstoreapp.items.DictionaryMagazine;
 import com.example.bookstoreapp.items.MagazineItem;
-import com.example.bookstoreapp.jsonParser.JSONGenreParser;
-import com.example.bookstoreapp.jsonParser.JSONParser;
-import com.example.bookstoreapp.jsonParser.JSONTypeParser;
-import com.example.bookstoreapp.repository.DictionaryBookRepository;
+import com.example.bookstoreapp.loaders.IEntityLoader;
+import com.example.bookstoreapp.loaders.TypeLoader;
 import com.example.bookstoreapp.repository.DictionaryMagazineRepository;
 
 import java.util.List;
@@ -28,8 +23,9 @@ public class TypeSynchronizer<T> implements SynchronizeItems<T> {
     }
 
     @Override
-    public void addToData(List<T> items) {
+    public void addToDataBase(List<T> items) {
         DictionaryMagazineRepository<T> repository = new DictionaryMagazineRepository<>();
+        repository.allDelete();
         DictionaryMagazine newDictionary;
 
         for(T item : items){
@@ -46,24 +42,17 @@ public class TypeSynchronizer<T> implements SynchronizeItems<T> {
         }
     }
 
-    @Override
-    public void deleteData() {
-        DictionaryMagazineRepository<T> repository = new DictionaryMagazineRepository<>();
-        repository.allDelete();
-    }
-
     private class LoadItemsTask extends AsyncTask<Void, Void, List<T>> {
         @Override
         protected List<T> doInBackground(Void... params) {
-            JSONParser<T> parser = new JSONTypeParser<>();
-            return parser.downloadCollection(URL_KEY.COLLECTIONS_TYPE);
+            IEntityLoader<DictionaryMagazine> loader = new TypeLoader<>();
+            return (List<T>)loader.load();
         }
 
         @Override
         public void onPostExecute(List<T> result){
             super.onPostExecute(result);
-            deleteData();
-            addToData(result);
+            addToDataBase(result);
             Log.i(TAG, "TypeSynchroniser item: "+ result.size());
         }
     }

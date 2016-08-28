@@ -3,9 +3,9 @@ package com.example.bookstoreapp.Synchronaisers;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.bookstoreapp.URL_KEY;
-import com.example.bookstoreapp.jsonParser.JSONMagazineParser;
-import com.example.bookstoreapp.jsonParser.JSONParser;
+import com.example.bookstoreapp.items.MagazineItem;
+import com.example.bookstoreapp.loaders.IEntityLoader;
+import com.example.bookstoreapp.loaders.MagazineLoader;
 import com.example.bookstoreapp.repository.MagazineRepository;
 
 import java.util.List;
@@ -22,31 +22,25 @@ public class MagazineSynchronizer<T> implements SynchronizeItems<T> {
     }
 
     @Override
-    public void addToData(List<T> items) {
+    public void addToDataBase(List<T> items) {
         MagazineRepository<T> repository = new MagazineRepository<>();
+        repository.allDelete();
         for(T item : items){
             repository.insert(item);
         }
     }
 
-    @Override
-    public void deleteData() {
-        MagazineRepository<T> repository = new MagazineRepository<>();
-        repository.allDelete();
-    }
-
     private class LoadItemsTask extends AsyncTask<Void, Void, List<T>> {
         @Override
         protected List<T> doInBackground(Void... params) {
-            JSONParser<T> parser = new JSONMagazineParser<>();
-            return parser.downloadCollection(URL_KEY.COLLECTIONS_MAGAZINE);
+            IEntityLoader<MagazineItem> loader = new MagazineLoader<>();
+            return (List<T>)loader.load();
         }
 
         @Override
         public void onPostExecute(List<T> result){
             super.onPostExecute(result);
-            deleteData();
-            addToData(result);
+            addToDataBase(result);
             Log.i(TAG, "MagazineSynchroniser item: "+ result.size());
         }
     }

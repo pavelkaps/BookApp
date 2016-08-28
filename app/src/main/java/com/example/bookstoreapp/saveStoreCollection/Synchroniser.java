@@ -83,7 +83,7 @@ public class Synchroniser implements Subject{
             allCategory = new ArrayList<>();
 
             XMLParser parser = new XMLParser();
-            parser.downloadCollection(URL_KEY.COLLECTIONS, allCategory);
+            parser.parce(URL_KEY.COLLECTIONS, allCategory);
             aboutCollection.getInstance().sortCollection(allCategory);
             aboutCollection.getInstance().showLogCategory(allCategory);
 

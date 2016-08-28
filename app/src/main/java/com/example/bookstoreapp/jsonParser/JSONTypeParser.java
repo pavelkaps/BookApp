@@ -4,8 +4,6 @@ import android.util.Log;
 
 import com.example.bookstoreapp.ConnectToNetwork;
 import com.example.bookstoreapp.URL_KEY;
-import com.example.bookstoreapp.items.BookItem;
-import com.example.bookstoreapp.items.DictionaryBook;
 import com.example.bookstoreapp.items.DictionaryMagazine;
 import com.example.bookstoreapp.items.MagazineItem;
 
@@ -19,15 +17,13 @@ import java.util.List;
 /**
  * Created by Паша on 23.08.2016.
  */
-public class JSONTypeParser<T> implements JSONParser<T>{
+public class JSONTypeParser<T> implements IEntityJSONParser<T> {
     private static final String TAG = "JSONTypeParser";
 
     @Override
-    public List<T> downloadCollection(String url) {
+    public List<T> parce(String jsonString) {
         List<DictionaryMagazine> items = new ArrayList<>();
         try {
-            String jsonString = ConnectToNetwork.loadDataFromServer(url);
-            Log.i(TAG, jsonString);
             JSONArray jsonArray = new JSONArray(jsonString);
 
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -41,8 +37,8 @@ public class JSONTypeParser<T> implements JSONParser<T>{
 
                 for(int j=0;i< magazineArray.length();i++) {
                     String magazineId = magazineArray.getString(i);
-                    JSONParser<MagazineItem> magazineParser = new JSONMagazineParser<>();
-                    List<MagazineItem> oneMagazine = magazineParser.downloadCollection(URL_KEY.COLLECTIONS_MAGAZINE + "/" + magazineId);
+                    IEntityJSONParser<MagazineItem> magazineParser = new JSONMagazineParser<>();
+                    List<MagazineItem> oneMagazine = magazineParser.parce(URL_KEY.COLLECTIONS_MAGAZINE + "/" + magazineId);
                     item.listItem.add(oneMagazine.get(0));
                 }
                 Log.i(TAG, "addItem");

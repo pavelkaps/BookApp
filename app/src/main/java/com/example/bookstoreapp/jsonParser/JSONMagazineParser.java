@@ -3,7 +3,6 @@ package com.example.bookstoreapp.jsonParser;
 import android.util.Log;
 
 import com.example.bookstoreapp.ConnectToNetwork;
-import com.example.bookstoreapp.URL_KEY;
 import com.example.bookstoreapp.items.MagazineItem;
 
 import org.json.JSONArray;
@@ -16,15 +15,13 @@ import java.util.List;
 /**
  * Created by Паша on 23.08.2016.
  */
-public class JSONMagazineParser<T> implements JSONParser<T> {
+public class JSONMagazineParser<T> implements IEntityJSONParser<T> {
     private static final String TAG = "JSONMagazineParser";
 
     @Override
-    public List downloadCollection(String url) {
+    public List parce(String jsonString) {
         List<MagazineItem> items = new ArrayList<>();
         try {
-            String jsonString = ConnectToNetwork.loadDataFromServer(url);
-            Log.i(TAG, jsonString);
             JSONArray jsonArray = new JSONArray(jsonString);
 
             for (int i = 0; i < jsonArray.length(); i++) {

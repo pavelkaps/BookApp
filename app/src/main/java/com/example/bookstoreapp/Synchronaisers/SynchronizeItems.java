@@ -7,6 +7,5 @@ import java.util.List;
  */
 public interface SynchronizeItems<T> {
     void load();
-    void addToData(List<T> items);
-    void deleteData();
+    void addToDataBase(List<T> items);
 }

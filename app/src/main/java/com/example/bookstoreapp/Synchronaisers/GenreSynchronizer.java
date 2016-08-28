@@ -3,14 +3,11 @@ package com.example.bookstoreapp.Synchronaisers;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.bookstoreapp.URL_KEY;
 import com.example.bookstoreapp.items.BookItem;
 import com.example.bookstoreapp.items.DictionaryBook;
-import com.example.bookstoreapp.jsonParser.JSONBookParser;
-import com.example.bookstoreapp.jsonParser.JSONGenreParser;
-import com.example.bookstoreapp.jsonParser.JSONParser;
+import com.example.bookstoreapp.loaders.GenreLoader;
+import com.example.bookstoreapp.loaders.IEntityLoader;
 import com.example.bookstoreapp.repository.DictionaryBookRepository;
-import com.example.bookstoreapp.repository.MagazineRepository;
 
 import java.util.List;
 
@@ -26,8 +23,9 @@ public class GenreSynchronizer<T> implements SynchronizeItems<T> {
     }
 
     @Override
-    public void addToData(List<T> items) {
+    public void addToDataBase(List<T> items) {
         DictionaryBookRepository<T> repository = new DictionaryBookRepository<>();
+        repository.allDelete();
         DictionaryBook newDictionary;
 
         for(T item : items){
@@ -44,24 +42,18 @@ public class GenreSynchronizer<T> implements SynchronizeItems<T> {
         }
     }
 
-    @Override
-    public void deleteData() {
-        DictionaryBookRepository<T> repository = new DictionaryBookRepository<>();
-        repository.allDelete();
-    }
 
     private class LoadItemsTask extends AsyncTask<Void, Void, List<T>> {
         @Override
         protected List<T> doInBackground(Void... params) {
-            JSONParser<T> parser = new JSONGenreParser<>();
-            return parser.downloadCollection(URL_KEY.COLLECTIONS_GENRE);
+            IEntityLoader<DictionaryBook> loader = new GenreLoader<>();
+            return (List<T>)loader.load();
         }
 
         @Override
         public void onPostExecute(List<T> result){
             super.onPostExecute(result);
-            deleteData();
-            addToData(result);
+            addToDataBase(result);
             Log.i(TAG, "GenreSynchroniser item: "+ result.size());
         }
     }

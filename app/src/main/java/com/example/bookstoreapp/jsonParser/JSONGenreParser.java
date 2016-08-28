@@ -6,7 +6,6 @@ import com.example.bookstoreapp.ConnectToNetwork;
 import com.example.bookstoreapp.URL_KEY;
 import com.example.bookstoreapp.items.BookItem;
 import com.example.bookstoreapp.items.DictionaryBook;
-import com.example.bookstoreapp.items.DictionaryMagazine;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,15 +17,13 @@ import java.util.List;
 /**
  * Created by Паша on 23.08.2016.
  */
-public class JSONGenreParser<T> implements JSONParser<T> {
+public class JSONGenreParser<T> implements IEntityJSONParser<T> {
     private static final String TAG = "JSONGenreParser";
 
     @Override
-    public List<T> downloadCollection(String url) {
+    public List<T> parce(String jsonString) {
         List<DictionaryBook> items = new ArrayList<>();
         try {
-            String jsonString = ConnectToNetwork.loadDataFromServer(url);
-            Log.i(TAG, jsonString);
             JSONArray jsonArray = new JSONArray(jsonString);
 
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -40,8 +37,8 @@ public class JSONGenreParser<T> implements JSONParser<T> {
 
                 for(int j=0;i< bookArray.length();i++) {
                     String bookId = bookArray.getString(i);
-                    JSONParser<BookItem> bookParser = new JSONBookParser<>();
-                    List<BookItem> oneBook = bookParser.downloadCollection(URL_KEY.COLLECTIONS_BOOK + "/" + bookId);
+                    IEntityJSONParser<BookItem> bookParser = new JSONBookParser<>();
+                    List<BookItem> oneBook = bookParser.parce(URL_KEY.COLLECTIONS_BOOK + "/" + bookId);
                     item.listItem.add(oneBook.get(0));
                 }
                 Log.i(TAG, "addItem");
